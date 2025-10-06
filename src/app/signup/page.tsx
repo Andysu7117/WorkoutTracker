@@ -20,7 +20,7 @@ export default function SignupPage() {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, password: data.password }),
+        body: JSON.stringify({ email: data.email, password: data.password, confirmPassword: data.confirmPassword }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
