@@ -80,7 +80,7 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-full bg-white/10 px-10 py-2 font-semibold no-underline transition text-white hover:bg-white/20"
+            className="cursor-pointer block w-full rounded-md border border-gray-300 bg-white/10 px-10 py-2 text-center text-sm no-underline transition text-zinc-200 hover:bg-white/30"
           >
             Sign Up
           </button>
@@ -92,7 +92,7 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/home" })}
-            className="block w-full rounded-md border border-gray-300 px-4 py-2 text-center text-sm text-gray-700 hover:bg-gray-50"
+            className="cursor-pointer block w-full rounded-md border border-gray-300 px-4 py-2 text-center text-sm text-zinc-200 bg-white/10 hover:bg-white/30"
           >
             <span className="mr-2">🟢</span> Continue with <span className="font-medium">Google</span>
           </button>
@@ -113,7 +113,7 @@ export default function SignupPage() {
         </label>
 
         <p className="mt-6 text-sm text-gray-600">
-          Already have an account? <Link href="/" className="underline">Sign in</Link>
+          Already have an account? <Link href="/signin" className="underline">Sign in</Link>
         </p>
 
         {error && (
