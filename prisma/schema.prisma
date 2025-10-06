@@ -63,6 +63,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    workouts      Workout[]
 }
 
 model VerificationToken {
@@ -71,4 +72,55 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// ----------------------------
+// Workout tracking domain
+// ----------------------------
+
+enum MuscleGroup {
+    CHEST
+    BACK
+    SHOULDERS
+    BICEPS
+    TRICEPS
+    LEGS
+    GLUTES
+    CORE
+    FULL_BODY
+    OTHER
+}
+
+model Workout {
+    id          Int       @id @default(autoincrement())
+    userId      String
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name        String
+    performedAt DateTime  @default(now())
+    notes       String?
+
+    sets        Set[]
+
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([userId, performedAt])
+}
+
+model Set {
+    id           Int         @id @default(autoincrement())
+    workoutId    Int
+    workout      Workout     @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+    
+    exerciseName String      // Exercise name stored directly
+    muscleGroup  MuscleGroup // Muscle group trained
+    weight       Decimal?    @db.Decimal(10, 2) // Weight in kg
+    reps         Int?        // Number of repetitions
+    durationSec  Int?        // Duration for timed exercises (e.g. planks)
+    setNumber    Int         // Order of this set in the workout
+    notes        String?     // Optional notes for this set
+
+    createdAt    DateTime   @default(now())
+
+    @@index([workoutId, setNumber])
 }
