@@ -18,16 +18,6 @@ export default function SignupPage() {
     const onSubmit = async (data: SignInSchema) => {
         setError(null);
         try {
-            const res = await fetch("/api/signin", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: data.email, password: data.password }),
-            });
-            if (!res.ok) {
-                const body = await res.json().catch(() => ({}));
-                setError(body.message ?? "Unable to sign in");
-                return;
-            }
             await signIn("credentials", {
                 email: data.email,
                 password: data.password,
