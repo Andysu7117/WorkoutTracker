@@ -3,8 +3,11 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const navigation = [
+  { name: 'Home', href: '/home'},
   { name: 'Workouts', href: '/workouts'},
   { name: 'About Us', href: '#'},
 ]
@@ -15,6 +18,15 @@ function classNames(...classes: (string | undefined | null | false)[]) {
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Redirect unauthenticated users to home page
+  useEffect(() => {
+    if (status === 'unauthenticated' && pathname !== '/') {
+      router.push('/');
+    }
+  }, [status, pathname, router]);
   return (
     <Disclosure
       as="nav"
@@ -41,24 +53,25 @@ export default function Header() {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      'text-gray-300 hover:bg-white/5 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
+                {navigation.map((item) => {
+                  const isCurrent = pathname === item.href;
+                  return (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className={classNames(
+                        isCurrent ? 'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                        'rounded-md px-3 py-2 text-sm font-medium',
+                      )}
+                    >
+                      {item.name}
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {status === 'authenticated' ? (
-              <>
                 <button
                   type="button"
                   className="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
@@ -109,48 +122,28 @@ export default function Header() {
                     </MenuItem>
                   </MenuItems>
                 </Menu>
-              </>
-            ) : (
-              <div className="flex items-center space-x-4">
-                <a
-                  href="#"
-                  className={classNames(
-                    'text-gray-300 hover:bg-white/5 hover:text-white',
-                    'rounded-md px-3 py-2 text-sm font-medium',
-                  )}
-                >
-                  Sign in
-                </a>
-                <a
-                  href="#"
-                  className={classNames(
-                    'text-gray-300 hover:bg-white/5 hover:text-white',
-                    'rounded-md px-3 py-2 text-sm font-medium',
-                  )}
-                >
-                  Sign up
-                </a>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
-            <DisclosureButton
-              key={item.name}
-              as="a"
-              href={item.href}
-              className={classNames(
-                'text-gray-300 hover:bg-white/5 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
-              )}
-            >
-              {item.name}
-            </DisclosureButton>
-          ))}
+          {navigation.map((item) => {
+            const isCurrent = pathname === item.href;
+            return (
+              <DisclosureButton
+                key={item.name}
+                as="a"
+                href={item.href}
+                className={classNames(
+                  isCurrent ? 'bg-gray-950/50 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white',
+                  'block rounded-md px-3 py-2 text-base font-medium',
+                )}
+              >
+                {item.name}
+              </DisclosureButton>
+            );
+          })}
         </div>
       </DisclosurePanel>
     </Disclosure>
